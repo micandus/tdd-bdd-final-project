@@ -146,9 +146,51 @@ class TestProductModel(unittest.TestCase):
     def test_list_all_products(self):
         """Test to fetch all products in the database"""
         self.assertEqual(len(Product.all()), 0)
-        for i in range (5):
+        for i in range(5):
             product = ProductFactory()
             product.id = None
             product.create()
             self.assertIsNotNone(product.id)
         self.assertEqual(len(Product.all()), 5)
+
+    def test_find_by_name(self):
+        """Test to find products by name"""
+        products = ProductFactory.create_batch(5)
+        search_it = products[0].name
+        counter = 0
+        for entry in products:
+            entry.create()
+            if entry.name == search_it:
+                counter = counter + 1
+        found_it = Product.find_by_name(search_it)
+        self.assertEqual(counter, found_it.count())
+        for entry in found_it:
+            self.assertEqual(entry.name, search_it)
+
+    def test_find_by_availability(self):
+        """Test to find products that are available (or not)"""
+        products = ProductFactory.create_batch(10)
+        search_it = products[0].available
+        counter = 0
+        for entry in products:
+            entry.create()
+            if entry.available == search_it:
+                counter = counter + 1
+        found_it = Product.find_by_availability(search_it)
+        self.assertEqual(counter, found_it.count())
+        for entry in found_it:
+            self.assertEqual(entry.available, search_it)
+
+    def test_find_by_category(self):
+        """Test to find products by category"""
+        products = ProductFactory.create_batch(10)
+        search_it = products[0].category
+        counter = 0
+        for entry in products:
+            entry.create()
+            if entry.category == search_it:
+                counter = counter + 1
+        found_it = Product.find_by_category(search_it)
+        self.assertEqual(counter, found_it.count())
+        for entry in found_it:
+            self.assertEqual(entry.category, search_it)
