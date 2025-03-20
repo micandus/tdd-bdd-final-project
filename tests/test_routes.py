@@ -167,9 +167,26 @@ class TestProductRoutes(TestCase):
     # ADD YOUR TEST CASES HERE
     #
 
-    ######################################################################
-    # Utility functions
-    ######################################################################
+    def test_get_product(self):
+        """Test of getting a product"""
+        to_test = self._create_products(1)[0]
+        response = self.client.get(f"{BASE_URL}/{to_test.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.get_json()
+        self.assertEqual(response_data["name"], to_test.name)
+        self.assertEqual(response_data["description"], to_test.description)
+        self.assertEqual(Decimal(response_data["price"]), to_test.price)
+        self.assertEqual(response_data["available"], to_test.available)
+
+    def test_get_product_not_found(self):
+        """ Test 404 exception in getting a product"""
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+######################################################################
+# Utility functions
+######################################################################
 
     def get_product_count(self):
         """save the current number of products"""
@@ -177,4 +194,4 @@ class TestProductRoutes(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.get_json()
         # logging.debug("data = %s", data)
-        return len(data)
+        return len(data)  
