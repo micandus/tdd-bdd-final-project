@@ -98,9 +98,15 @@ def create_products():
 # L I S T   A L L   P R O D U C T S
 ######################################################################
 
-#
-# PLACE YOUR CODE TO LIST ALL PRODUCTS HERE
-#
+@app.route("/products", methods=["GET"])
+def get_all_products():
+    """Returns a list of all products in the database"""
+    products = Product.all()
+    to_return = []
+    for item in products:
+        to_return.append(item.serialize())
+    return (to_return, status.HTTP_200_OK)
+
 
 ######################################################################
 # R E A D   A   P R O D U C T

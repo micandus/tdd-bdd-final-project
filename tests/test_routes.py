@@ -211,7 +211,7 @@ class TestProductRoutes(TestCase):
         """Test delete function"""
         #create products in the database
         products = self._create_products(6)
-        #count = self.get_product_count()
+        count = self.get_product_count()
         
         #delete one of them
         to_test = products[0]
@@ -222,8 +222,8 @@ class TestProductRoutes(TestCase):
         #be sure it is gone
         response = self.client.get(f'{BASE_URL}/{to_test.id}')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        #new_count = self.get_product_count()
-        #self.assertEqual(new_count, count-1)
+        new_count = self.get_product_count()
+        self.assertEqual(new_count, count-1)
 
     def test_delete_product_not_found(self):
         """ Test 404 exception in deleting a product"""
@@ -234,6 +234,15 @@ class TestProductRoutes(TestCase):
         #then delete it with a worng id
         response = self.client.delete(f"{BASE_URL}/0", json=to_test.serialize())
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_get_all(self):
+        """Test to get all products from the database"""
+        self._create_products(5)
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        to_test = response.get_json()
+        self.assertEqual(len(to_test), 5)
+
 
 ######################################################################
 # Utility functions
