@@ -243,6 +243,20 @@ class TestProductRoutes(TestCase):
         to_test = response.get_json()
         self.assertEqual(len(to_test), 5)
 
+    def test_request_by_name(self):
+        """Test a get request by a search name"""
+        #get a test name in our products, count how many products have this name
+        products = self._create_products(5)
+        to_test = products[0].name
+        counter = 0
+        for item in products:
+            if item.name == to_test:
+                counter = counter+1
+        
+        #test the function
+        response = self.client.get(BASE_URL, query)
+
+
 
 ######################################################################
 # Utility functions
