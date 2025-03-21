@@ -225,6 +225,16 @@ class TestProductRoutes(TestCase):
         #new_count = self.get_product_count()
         #self.assertEqual(new_count, count-1)
 
+    def test_delete_product_not_found(self):
+        """ Test 404 exception in deleting a product"""
+        #create a product in the database first
+        to_test = ProductFactory()
+        response = self.client.post(BASE_URL, json=to_test.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        #then delete it with a worng id
+        response = self.client.delete(f"{BASE_URL}/0", json=to_test.serialize())
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 ######################################################################
 # Utility functions
 ######################################################################
